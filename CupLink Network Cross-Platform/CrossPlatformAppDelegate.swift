@@ -7,7 +7,7 @@
 
 import Foundation
 import NetworkExtension
-import CupLink
+import Mesh
 import UIKit
 
 class CrossPlatformAppDelegate: PlatformAppDelegate {

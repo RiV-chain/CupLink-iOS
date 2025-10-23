@@ -10,7 +10,7 @@ import UIKit
 #elseif canImport(AppKit)
 import AppKit
 #endif
-import CupLink
+import Mesh
 import NetworkExtension
 
 #if os(iOS)

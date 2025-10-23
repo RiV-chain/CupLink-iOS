@@ -1,6 +1,6 @@
 import UIKit
 import NetworkExtension
-import CupLink
+import Mesh
 
 class TableViewController: UITableViewController {
     var app = UIApplication.shared.delegate as! AppDelegate
@@ -40,7 +40,7 @@ class TableViewController: UITableViewController {
             self.tableView.deselectRow(at: row, animated: true)
         }
         
-        self.statsVersion.text = CupLink.MobileGetVersion()
+        self.statsVersion.text = Mesh.MobileGetVersion()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

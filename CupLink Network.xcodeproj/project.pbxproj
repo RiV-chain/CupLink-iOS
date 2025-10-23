@@ -17,8 +17,8 @@
 		3952ADB829945AF700B3835D /* ConfigurationProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3952ADB629945AF700B3835D /* ConfigurationProxy.swift */; };
 		3952ADBA29945AFA00B3835D /* CrossPlatformAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3952ADB929945AFA00B3835D /* CrossPlatformAppDelegate.swift */; };
 		39682A392225AD15004FB670 /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39682A382225AD15004FB670 /* CopyableLabel.swift */; };
-		3996AF38270328080070947D /* CupLink.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3996AF37270328080070947D /* CupLink.xcframework */; };
-		3996AF39270328080070947D /* CupLink.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3996AF37270328080070947D /* CupLink.xcframework */; };
+		3996AF38270328080070947D /* Mesh.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3996AF37270328080070947D /* Mesh.xcframework */; };
+		3996AF39270328080070947D /* Mesh.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3996AF37270328080070947D /* Mesh.xcframework */; };
 		39AE88392319C93F0010FFF6 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39AE88382319C93F0010FFF6 /* NetworkExtension.framework */; };
 		39CC924C221DEDCE004960DC /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CC924B221DEDCE004960DC /* NSNotification.swift */; };
 		39CC924D221DEDD3004960DC /* NSNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39CC924B221DEDCE004960DC /* NSNotification.swift */; };
@@ -69,7 +69,7 @@
 		3952ADB629945AF700B3835D /* ConfigurationProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationProxy.swift; sourceTree = "<group>"; };
 		3952ADB929945AFA00B3835D /* CrossPlatformAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossPlatformAppDelegate.swift; sourceTree = "<group>"; };
 		39682A382225AD15004FB670 /* CopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
-		3996AF37270328080070947D /* CupLink.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CupLink.xcframework; sourceTree = "<group>"; };
+		3996AF37270328080070947D /* Mesh.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Mesh.xcframework; sourceTree = "<group>"; };
 		39AE88382319C93F0010FFF6 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 		39CC924B221DEDCE004960DC /* NSNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSNotification.swift; sourceTree = "<group>"; };
 		E593CE6B1DF8FC3C00D7265D /* CupLinkNetwork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CupLinkNetwork.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,7 +89,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3996AF38270328080070947D /* CupLink.xcframework in Frameworks */,
+				3996AF38270328080070947D /* Mesh.xcframework in Frameworks */,
 				39AE88392319C93F0010FFF6 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3996AF39270328080070947D /* CupLink.xcframework in Frameworks */,
+				3996AF39270328080070947D /* Mesh.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,7 +164,7 @@
 		399D032221DA775D0016354F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3996AF37270328080070947D /* CupLink.xcframework */,
+				3996AF37270328080070947D /* Mesh.xcframework */,
 				39AE88382319C93F0010FFF6 /* NetworkExtension.framework */,
 			);
 			name = Frameworks;

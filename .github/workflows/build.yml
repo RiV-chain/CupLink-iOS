@@ -1,0 +1,160 @@
+name: Build CupLink iOS
+
+on:
+  # Automatic triggers
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  # Manual trigger (no inputs needed)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: 'latest-stable'
+        
+    - name: Show Xcode version
+      run: xcodebuild -version
+      
+    - name: Show available simulators
+      run: xcrun simctl list devices available
+      
+    - name: Download Mesh.xcframework
+      id: download_framework
+      run: |
+        # Set the framework URL
+        FRAMEWORK_URL="https://github.com/RiV-chain/artifact/raw/main/org/rivchain/v6space/0.4.7.24/v6space-0.4.7.24.zip"
+        
+        echo "Downloading CupLink.framework from: $FRAMEWORK_URL"
+        
+        # Create frameworks directory
+        mkdir -p frameworks
+        
+        # Download the framework
+        if curl -L -o frameworks/v6space-0.4.7.24.zip "$FRAMEWORK_URL"; then
+          echo "✅ Framework downloaded successfully"
+          
+          # Extract the framework
+          cd frameworks
+          unzip -q v6space-0.4.7.24.zip
+          cd ..
+          
+          # Check if extraction was successful
+          if [ -d "frameworks/Mesh.xcframework" ]; then
+            # Move framework to project root
+            mv frameworks/Mesh.xcframework .
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Mesh.xcframework extracted and ready"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "❌ Failed to extract Mesh.xcframework"
+          fi
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+          echo "❌ Failed to download Mesh.xcframework from $FRAMEWORK_URL"
+          echo "⚠️ Build may fail without the framework"
+        fi
+        
+    - name: Build for iOS Simulator
+      run: |
+        xcodebuild clean build \
+          -project "CupLink Network.xcodeproj" \
+          -scheme CupLinkNetwork \
+          -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+          -configuration Debug \
+          CODE_SIGNING_ALLOWED=NO \
+          CODE_SIGN_IDENTITY="" \
+          PROVISIONING_PROFILE="" \
+          | xcpretty
+          
+    - name: Build for iOS Device (requires signing)
+      run: |
+        echo "⚠️ Device builds require Apple Developer account and code signing"
+        echo "This will likely fail without proper certificates and provisioning profiles"
+        xcodebuild clean build \
+          -project "CupLink Network.xcodeproj" \
+          -scheme CupLinkNetwork \
+          -destination 'generic/platform=iOS' \
+          -configuration Debug \
+          | xcpretty || echo "❌ Device build failed (expected without proper signing)"
+          
+    - name: Build Extension separately
+      run: |
+        echo "Building Network Extension..."
+        xcodebuild clean build \
+          -project "CupLink Network.xcodeproj" \
+          -scheme CupLinkNetworkExtension \
+          -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+          -configuration Debug \
+          CODE_SIGNING_ALLOWED=NO \
+          CODE_SIGN_IDENTITY="" \
+          PROVISIONING_PROFILE="" \
+          | xcpretty
+          
+    - name: Run tests (if available)
+      run: |
+        if xcodebuild -project "CupLink Network.xcodeproj" -list | grep -q "Test"; then
+          echo "Running tests..."
+          xcodebuild test \
+            -project "CupLink Network.xcodeproj" \
+            -scheme CupLinkNetwork \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty
+        else
+          echo "No test scheme found, skipping tests"
+        fi
+        
+    - name: Archive build artifacts
+      if: always()
+      run: |
+        mkdir -p build-artifacts
+        
+        # Find and copy .app files
+        find . -name "*.app" -type d | while read app; do
+          echo "Found app: $app"
+          cp -r "$app" build-artifacts/
+        done
+        
+        # Find and copy .appex files (extensions)
+        find . -name "*.appex" -type d | while read appex; do
+          echo "Found extension: $appex"
+          cp -r "$appex" build-artifacts/
+        done
+        
+        # List what we found
+        ls -la build-artifacts/
+        
+    - name: Upload build artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-artifacts
+        path: build-artifacts/
+        retention-days: 7
+        
+    - name: Build summary
+      if: always()
+      run: |
+        echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Type**: simulator + device" >> $GITHUB_STEP_SUMMARY
+        echo "- **Scheme**: CupLinkNetwork + CupLinkNetworkExtension" >> $GITHUB_STEP_SUMMARY
+        echo "- **Xcode Version**: $(xcodebuild -version | head -n1)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Mesh Framework**: ${{ steps.download_framework.outputs.exists }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Framework URL**: https://github.com/RiV-chain/artifact/raw/main/org/rivchain/v6space/0.4.7.24/v6space-0.4.7.24.zip" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Notes:" >> $GITHUB_STEP_SUMMARY
+        echo "- Simulator builds work without Apple Developer account" >> $GITHUB_STEP_SUMMARY
+        echo "- Device builds require paid Apple Developer account (\$99/year)" >> $GITHUB_STEP_SUMMARY
+        echo "- Network Extensions (VPN) require special entitlements" >> $GITHUB_STEP_SUMMARY
+        echo "- Mesh.xcframework is downloaded from external URL during build" >> $GITHUB_STEP_SUMMARY

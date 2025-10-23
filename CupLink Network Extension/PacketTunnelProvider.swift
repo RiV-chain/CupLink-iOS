@@ -1,10 +1,10 @@
 import NetworkExtension
 import Foundation
-import CupLink
+import Mesh
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
 
-    var CupLink: MobileCupLink = MobileCupLink()
+    var Mesh: MobileMesh = MobileMesh()
     var CupLinkConfig: ConfigurationProxy?
 
     func startCupLink() -> Error? {
@@ -25,14 +25,14 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 NSLog("Configuration loaded")
                 
                 do {
-                    try self.CupLink.startJSON(config.data())
+                    try self.Mesh.startJSON(config.data())
                 } catch {
                     NSLog("Starting CupLink process produced an error: " + error.localizedDescription)
                     return
                 }
 
-                let address = self.CupLink.getAddressString()
-                let subnet = self.CupLink.getSubnetString()
+                let address = self.Mesh.getAddressString()
+                let subnet = self.Mesh.getSubnetString()
                 
                 NSLog("CupLink IPv6 address: " + address)
                 NSLog("CupLink IPv6 subnet: " + subnet)
@@ -40,7 +40,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 let tunnelNetworkSettings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: address)
                 tunnelNetworkSettings.ipv6Settings = NEIPv6Settings(addresses: [address], networkPrefixLengths: [7])
                 tunnelNetworkSettings.ipv6Settings?.includedRoutes = [NEIPv6Route(destinationAddress: "0200::", networkPrefixLength: 7)]
-                tunnelNetworkSettings.mtu = NSNumber(integerLiteral: self.CupLink.getMTU())
+                tunnelNetworkSettings.mtu = NSNumber(integerLiteral: self.Mesh.getMTU())
 
                 NSLog("Setting tunnel network settings...")
                 
@@ -54,7 +54,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                         
                         if let fd = self.tunnelFileDescriptor {
                             do {
-                                try self.CupLink.takeOverTUN(fd)
+                                try self.Mesh.takeOverTUN(fd)
                             } catch {
                                 NSLog("Taking over TUN produced an error: " + error.localizedDescription)
                                 err = error
@@ -87,7 +87,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     }
 
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        try? self.CupLink.stop()
+        try? self.Mesh.stop()
         super.stopTunnel(with: reason, completionHandler: completionHandler)
     }
     
@@ -95,15 +95,15 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         let request = String(data: messageData, encoding: .utf8)
         switch request {
         case "address":
-            completionHandler?(self.CupLink.getAddressString().data(using: .utf8))
+            completionHandler?(self.Mesh.getAddressString().data(using: .utf8))
         case "subnet":
-            completionHandler?(self.CupLink.getSubnetString().data(using: .utf8))
+            completionHandler?(self.Mesh.getSubnetString().data(using: .utf8))
         case "coords":
-            completionHandler?(self.CupLink.getCoordsString().data(using: .utf8))
+            completionHandler?(self.Mesh.getCoordsString().data(using: .utf8))
         case "peers":
-            completionHandler?(self.CupLink.getPeersJSON().data(using: .utf8))
+            completionHandler?(self.Mesh.getPeersJSON().data(using: .utf8))
         case "dht":
-            completionHandler?(self.CupLink.getDHTJSON().data(using: .utf8))
+            completionHandler?(self.Mesh.getDHTJSON().data(using: .utf8))
         default:
             completionHandler?(nil)
         }
