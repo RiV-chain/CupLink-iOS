@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/neilalexander/Desktop/Projects/CupLink-mobile/NEPacketTunnelVPNDemo/CupLink Network.xcodeproj">
+      location = "self:CupLink Network.xcodeproj">
    </FileRef>
 </Workspace>

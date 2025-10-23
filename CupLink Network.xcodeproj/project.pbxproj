@@ -37,7 +37,7 @@
 			containerPortal = E593CE631DF8FC3C00D7265D /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = E593CE961DF905AF00D7265D;
-			remoteInfo = NEPacketTunnelVPNDemoTunnel;
+			remoteInfo = CupLinkNetworkExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -236,7 +236,7 @@
 				E593CE9F1DF905AF00D7265D /* PBXTargetDependency */,
 			);
 			name = CupLinkNetwork;
-			productName = NEPacketTunnelVPNDemo;
+			productName = CupLinkNetwork;
 			productReference = E593CE6B1DF8FC3C00D7265D /* CupLinkNetwork.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -253,7 +253,7 @@
 			dependencies = (
 			);
 			name = CupLinkNetworkExtension;
-			productName = NEPacketTunnelVPNDemoTunnel;
+			productName = CupLinkNetworkExtension;
 			productReference = E593CE971DF905AF00D7265D /* CupLinkNetworkExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
