@@ -13,11 +13,9 @@ class TableViewController: UITableViewController {
     
     @IBOutlet weak var statsSelfIPCell: UITableViewCell!
     @IBOutlet weak var statsSelfSubnetCell: UITableViewCell!
-    @IBOutlet weak var statsSelfCoordsCell: UITableViewCell!
     
     @IBOutlet var statsSelfIP: UILabel!
     @IBOutlet var statsSelfSubnet: UILabel!
-    @IBOutlet var statsSelfCoords: UILabel!
     @IBOutlet var statsSelfPeers: UILabel!
     
     @IBOutlet var statsVersion: UILabel!
@@ -76,7 +74,11 @@ class TableViewController: UITableViewController {
     
     func updateConnectedStatus() {
         if self.app.vpnManager.connection.status == .connected {
+
             if app.CupLinkDHT.count > 0 {
+
+            if app.cuplinkPeers.count > 0 {
+
                 connectedStatusLabel.text = "Enabled"
                 connectedStatusLabel.textColor = UIColor(red: 0.37, green: 0.79, blue: 0.35, alpha: 1.0)
             } else {
@@ -93,14 +95,19 @@ class TableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
     }
     
+
     @objc func onCupLinkSelfUpdated(notification: NSNotification) {
         statsSelfIP.text = app.CupLinkSelfIP
         statsSelfSubnet.text = app.CupLinkSelfSubnet
         statsSelfCoords.text = app.CupLinkSelfCoords
+
+    @objc func onCupLinkSelfUpdated(notification: NSNotification) {
+        statsSelfIP.text = app.cuplinkSelfIP
+        statsSelfSubnet.text = app.cuplinkSelfSubnet
+
         
         statsSelfIPCell.layoutSubviews()
         statsSelfSubnetCell.layoutSubviews()
-        statsSelfCoordsCell.layoutSubviews()
         
         let status = self.app.vpnManager.connection.status
         toggleConnect.isOn = status == .connecting || status == .connected
@@ -112,8 +119,13 @@ class TableViewController: UITableViewController {
         self.updateConnectedStatus()
     }
     
+
     @objc func onCupLinkPeersUpdated(notification: NSNotification) {
         let peercount = app.CupLinkPeers.count
+
+    @objc func onCupLinkPeersUpdated(notification: NSNotification) {
+        let peercount = app.cuplinkPeers.filter { $0["Up"] as? Bool ?? false }.count
+
         if peercount <= 0 {
             statsSelfPeers.text = "No peers"
         } else if peercount == 1 {

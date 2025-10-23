@@ -67,18 +67,40 @@ class PeersViewController: UITableViewController {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "discoveredPeerPrototype", for: indexPath)
+
             let peers = app.CupLinkPeers.sorted { (a, b) -> Bool in
                 return (a["Port"] as! Int) < (b["Port"] as! Int)
+
+            let peers = app.cuplinkPeers.sorted { (a, b) -> Bool in
+                return (a["URI"] as! String) < (b["URI"] as! String)
+
             }
             
             if indexPath.row < peers.count {
                 let value = peers[indexPath.row]
+                let up = value["Up"] as? Bool ?? false
                 let proto = value["Protocol"] as? String ?? "tcp"
-                let remote = value["Remote"] as? String ?? "unknown"
-                let prio = value["Priority"] as? Int ?? 0
+                let uri = value["URI"] as? String ?? "unknown"
+                let uptime = value["Uptime"] as? UInt64 ?? 0
                 
-                cell.textLabel?.text = "\(value["IP"] ?? "(unknown)")"
-                cell.detailTextLabel?.text = "\(proto.uppercased()): \(remote)"
+                if !up {
+                    cell.textLabel?.text = uri
+                    cell.detailTextLabel?.text = "Not connected"
+                    
+                    cell.textLabel?.textColor = .systemGray
+                    cell.detailTextLabel?.textColor = .systemGray
+                } else {
+                    let formatter = DateComponentsFormatter()
+                    formatter.allowedUnits = [.hour, .minute, .second]
+                    formatter.unitsStyle = .short
+                    let uptime = formatter.string(from: TimeInterval(uptime / 1000 / 1000 / 1000))!
+
+                    cell.textLabel?.text = uri
+                    cell.detailTextLabel?.text = "Connected via \(proto.uppercased()), uptime \(uptime)"
+                    
+                    cell.textLabel?.textColor = .label
+                    cell.detailTextLabel?.textColor = .label
+                }
             }
             return cell
         case 1:
@@ -166,11 +188,17 @@ class PeersViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
+
             if self.app.CupLinkPeers.count > 0 {
               return "Connected Peers"
+
+            if self.app.cuplinkPeers.count > 0 {
+              return "Peer Status"
+
             }
-            return "No peers currently connected"
+            return "No Configured Peers"
         case 1:
+
             if let config = self.app.CupLinkConfig {
                 if let peers = config.get("Peers") as? [String] {
                     if peers.count > 0 {
@@ -179,6 +207,9 @@ class PeersViewController: UITableViewController {
                 }
             }
             return "No peers currently configured"
+
+            return "Configured Peers"
+
         case 2:
             return "Peer Connectivity"
         default: return "(Unknown)"
