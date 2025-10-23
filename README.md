@@ -1,4 +1,4 @@
-# Yggdrasil for iOS
+# CupLink for iOS
 
 Requires an Apple Developer account for the App Groups and Network Extension entitlements.
 
@@ -11,12 +11,12 @@ go get golang.org/x/mobile/cmd/gomobile
 gomobile init
 ```
 
-Clone the main Yggdrasil repository and build the `Yggdrasil.framework`:
+Clone the main CupLink repository and build the `CupLink.framework`:
 
 ```
-git clone https://github.com/yggdrasil-network/yggdrasil-go
-cd yggdrasil-go
+git clone https://github.com/cuplink-network/cuplink-go
+cd cuplink-go
 ./build -i
 ```
 
-Then copy `Yggdrasil.framework` into the top-level folder of this repository and then build using Xcode.
+Then copy `CupLink.framework` into the top-level folder of this repository and then build using Xcode.
